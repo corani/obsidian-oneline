@@ -1,0 +1,9 @@
+{
+	"id": "obsidian-one-line",
+	"name": "One Line",
+	"version": "0.1.0",
+	"minAppVersion": "1.4.0",
+	"description": "Dynamic blocks that show One Line journal entries from previous years (same day) or the current week.",
+	"author": "Daniel Bos",
+	"isDesktopOnly": false
+}

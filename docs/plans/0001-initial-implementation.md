@@ -367,17 +367,14 @@ The entry-date link is rendered with `createEl("a", { cls: "ol-block__entry-date
 
 ## Deploy Workflow
 
-esbuild outputs to `dist/`. A one-time symlink from the vault plugin folder into the repo's
-`dist/` directory means `npm run build` (or `npm run dev` watch mode) writes directly where
-Obsidian reads from -- no copy step needed:
+`dist/` is a symlink to `~/obsidian/.obsidian/plugins/obsidian-one-line` (the Windows vault
+folder via OneDrive). esbuild writes directly there, so `npm run build` is all that's needed.
+
+One-time setup:
 
 ```sh
-ln -s /path/to/obsidian-one-line/dist \
-      ~/obsidian/.obsidian/plugins/obsidian-one-line
+ln -s ~/obsidian/.obsidian/plugins/obsidian-one-line dist
 ```
-
-The symlink itself is not committed. esbuild writes `main.js` and copies `manifest.json` and
-`styles.css` into `dist/` as part of the build step.
 
 - TypeScript, compiled to a single `main.js` with esbuild (standard Obsidian plugin toolchain)
 - `manifest.json`: `minAppVersion: "1.4.0"`, `version: "0.1.0"`
