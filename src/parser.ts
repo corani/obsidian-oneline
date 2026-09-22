@@ -1,6 +1,7 @@
 export interface BlockConfig {
 	period: "day" | "week";
 	title?: string;
+	showTitle?: boolean;
 	section?: string;
 	limit?: number;
 	date?: string;
@@ -28,6 +29,9 @@ export function parseBlockConfig(source: string): BlockConfig {
 				break;
 			case "title":
 				config.title = value;
+				break;
+			case "showtitle":
+				config.showTitle = value.toLowerCase() !== "false";
 				break;
 			case "section":
 				config.section = value;

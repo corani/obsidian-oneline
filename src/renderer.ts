@@ -59,8 +59,11 @@ export class OneLineBlock extends MarkdownRenderChild {
 		}
 
 		const block = el.createDiv({ cls: "ol-block" });
-		const header = block.createDiv({ cls: "ol-block__header" });
-		header.createSpan({ cls: "ol-block__title", text: title });
+		const showTitle = config.showTitle ?? this.settings.showTitle;
+		if (showTitle) {
+			const header = block.createDiv({ cls: "ol-block__header" });
+			header.createSpan({ cls: "ol-block__title", text: title });
+		}
 
 		const content = block.createDiv({ cls: "ol-block__content" });
 		let hasEntries = false;

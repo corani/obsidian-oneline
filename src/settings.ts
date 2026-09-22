@@ -2,6 +2,7 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import type OneLinePlugin from "./main";
 
 export interface OneLineSettings {
+	showTitle: boolean;
 	defaultDayTitle: string;
 	defaultWeekTitle: string;
 	defaultSection: string;
@@ -11,6 +12,7 @@ export interface OneLineSettings {
 }
 
 export const DEFAULT_SETTINGS: OneLineSettings = {
+	showTitle: true,
 	defaultDayTitle: "On this day",
 	defaultWeekTitle: "This week",
 	defaultSection: "One Line",
@@ -28,7 +30,24 @@ export class OneLineSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
+		let dayTitleSetting: Setting;
+		let weekTitleSetting: Setting;
+
 		new Setting(containerEl)
+			.setName("Show title")
+			.setDesc("Show the block title bar by default.")
+			.addToggle(t => t
+				.setValue(this.plugin.settings.showTitle)
+				.onChange(async v => {
+					this.plugin.settings.showTitle = v;
+					await this.plugin.saveSettings();
+					dayTitleSetting.setDisabled(!v);
+					weekTitleSetting.setDisabled(!v);
+				}));
+
+		const disabled = !this.plugin.settings.showTitle;
+
+		dayTitleSetting = new Setting(containerEl)
 			.setName("Default title (day)")
 			.setDesc("Block title for period=day when not specified in the block.")
 			.addText(t => t
@@ -38,8 +57,9 @@ export class OneLineSettingTab extends PluginSettingTab {
 					this.plugin.settings.defaultDayTitle = v || DEFAULT_SETTINGS.defaultDayTitle;
 					await this.plugin.saveSettings();
 				}));
+		dayTitleSetting.setDisabled(disabled);
 
-		new Setting(containerEl)
+		weekTitleSetting = new Setting(containerEl)
 			.setName("Default title (week)")
 			.setDesc("Block title for period=week when not specified in the block.")
 			.addText(t => t
@@ -49,6 +69,7 @@ export class OneLineSettingTab extends PluginSettingTab {
 					this.plugin.settings.defaultWeekTitle = v || DEFAULT_SETTINGS.defaultWeekTitle;
 					await this.plugin.saveSettings();
 				}));
+		weekTitleSetting.setDisabled(disabled);
 
 		new Setting(containerEl)
 			.setName("Default section")
