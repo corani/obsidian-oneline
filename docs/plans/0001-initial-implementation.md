@@ -53,14 +53,13 @@ Given the note `Journal/Weekly/2026-W39.md` (or a daily note), the plugin:
 
 ### Output Format
 
-Rendered as a **card-style dynamic block** matching the charted-roots visual language:
-a bordered card with a title header bar, separator, and content rows. Not an Obsidian
-callout -- no colored left border, no callout icon.
+Rendered as a **card-style dynamic block**: a bordered card with a title header bar,
+separator, and content rows. Not an Obsidian callout -- no colored left border, no callout icon.
 
 ```text
 +--[ On this day ]-------------------------------------------+
 |  Sunday, 21 September 2025                                 |
-|  We went to the wildlife park...                           |
+|  A day out with the family...                              |
 |                                                            |
 |  Saturday, 21 September 2024                               |
 |  ...                                                       |
@@ -97,7 +96,9 @@ A settings tab (`PluginSettingTab`) provides vault-wide defaults:
 
 | Setting | Type | Default | Description |
 | --- | --- | --- | --- |
-| `defaultTitle` | text | `On this day` | Default block title |
+| `showTitle` | toggle | `true` | Show the block title bar by default |
+| `defaultDayTitle` | text | `On this day` | Default title for period=day |
+| `defaultWeekTitle` | text | `This week` | Default title for period=week |
 | `defaultSection` | text | `One Line` | Default section heading to extract |
 | `defaultLimit` | number | `5` | Default limit for day mode |
 | `dailyNotesFolder` | text | `Journal/Daily` | Folder containing daily notes |
@@ -165,7 +166,8 @@ interface BlockConfig {
   title?: string;
   section?: string;
   limit?: number;
-  date?: string;    // explicit date override, YYYY-MM-DD
+  date?: string;
+  showTitle?: boolean;
 }
 
 function parseBlockConfig(source: string): BlockConfig
@@ -270,8 +272,8 @@ const DEFAULT_SETTINGS: OneLineSettings = {
 
 ## Rendering -- DOM Structure and CSS
 
-The block follows the charted-roots `cr-dynamic-block` visual pattern exactly (minus the
-toolbar buttons, which we don't need).
+The block follows the `ol-block` card visual pattern: a bordered card with a title header
+bar and content area.
 
 ### DOM
 
@@ -285,7 +287,7 @@ toolbar buttons, which we don't need).
     <div class="ol-block__entry">
       <a class="ol-block__entry-date internal-link" href="2025-09-21">Sunday, 21 September 2025</a>
       <div class="ol-block__entry-body">
-        We went to the wildlife park...
+        A day out with the family...
       </div>
     </div>
   </div>
@@ -384,40 +386,36 @@ ln -s ~/obsidian/.obsidian/plugins/obsidian-one-line dist
 
 ### Phase 1 -- Scaffold
 
-- [ ] `manifest.json`, `package.json`, `tsconfig.json`, `esbuild.config.mjs`
-- [ ] `src/settings.ts` with interface and default values
-- [ ] `src/main.ts` with plugin class, loadSettings/saveSettings, settings tab registration
-- [ ] Basic code block processor that renders "hello world" in a card block
-- [ ] Verify plugin loads in Obsidian
+- [x] `manifest.json`, `package.json`, `tsconfig.json`, `esbuild.config.mjs`
+- [x] `src/settings.ts` with interface and default values
+- [x] `src/main.ts` with plugin class, loadSettings/saveSettings, settings tab registration
+- [x] Basic code block processor that renders "hello world" in a card block
+- [x] Verify plugin loads in Obsidian
 
 ### Phase 2 -- Day Mode
 
-- [ ] `src/parser.ts` -- parse block source into `BlockConfig`
-- [ ] `src/extractor.ts` -- extract section from markdown string
-- [ ] `src/resolver.ts` -- `resolveDayFiles` (filename-based date parsing)
-- [ ] `src/renderer.ts` -- render card block from resolved files
-- [ ] Wire up in `main.ts`
-- [ ] Test with `Journal/Daily/2026-09-21.md`
+- [x] `src/parser.ts` -- parse block source into `BlockConfig`
+- [x] `src/extractor.ts` -- extract section from markdown string
+- [x] `src/resolver.ts` -- `resolveDayFiles` (filename-based date parsing)
+- [x] `src/renderer.ts` -- render card block from resolved files
+- [x] Wire up in `main.ts`
+- [x] Test with `Journal/Daily/2026-09-21.md`
 
 ### Phase 3 -- Week Mode
 
-- [ ] `src/resolver.ts` -- `resolveWeekFiles` (ISO week calculation)
-- [ ] Handle weekly note filenames (`YYYY-Www`) as context
-- [ ] Test with `Journal/Weekly/2026-W39.md`
+- [x] `src/resolver.ts` -- `resolveWeekFiles` (ISO week calculation)
+- [x] Handle weekly note filenames (`YYYY-Www`) as context
+- [x] Test with `Journal/Weekly/2026-W39.md`
 
 ### Phase 4 -- Settings Tab UI
 
-- [ ] Implement `PluginSettingTab` in `src/settings.ts`
-- [ ] Add all five settings with appropriate controls
-- [ ] Test that defaults propagate to blocks that omit them
+- [x] Implement `PluginSettingTab` in `src/settings.ts`
+- [x] Add all five settings with appropriate controls
+- [x] Test that defaults propagate to blocks that omit them
 
 ### Phase 5 -- Polish
 
-- [ ] Error card for invalid config / missing section
-- [ ] Wikilink in date headers renders as a clickable internal link
-- [ ] Trailing empty lines in section content are stripped
-- [ ] Handle edge cases: note with no `One Line` section, week with no entries
-
-## Open Questions
-
-1. **Multiple sections**: Out of scope for v1.
+- [x] Error card for invalid config / missing section
+- [x] Wikilink in date headers renders as a clickable internal link
+- [x] Trailing empty lines in section content are stripped
+- [x] Handle edge cases: note with no `One Line` section, week with no entries
