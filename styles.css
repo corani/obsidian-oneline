@@ -52,6 +52,10 @@
 	margin: 0;
 }
 
+.ol-block__entry-body > p:last-child {
+	margin-bottom: var(--size-4-1);
+}
+
 .ol-block__empty {
 	color: var(--text-muted);
 	font-style: italic;

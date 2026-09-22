@@ -2,10 +2,16 @@ import { App, TFile } from "obsidian";
 import type { BlockConfig } from "./parser";
 import type { OneLineSettings } from "./settings";
 
-function parseDailyFilename(name: string): Date | null {
-	const m = name.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+// Parse a YYYY-MM-DD string as local time (avoids UTC midnight → previous day in UTC+ zones)
+function parseLocalDate(s: string): Date | null {
+	const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
 	if (!m) return null;
-	return new Date(+m[1], +m[2] - 1, +m[3]);
+	const d = new Date(+m[1], +m[2] - 1, +m[3]);
+	return isNaN(d.getTime()) ? null : d;
+}
+
+function parseDailyFilename(name: string): Date | null {
+	return parseLocalDate(name);
 }
 
 function isoWeekOf(d: Date): string {
@@ -32,8 +38,8 @@ export function resolveAnchorDate(
 	if (file) {
 		const fm = app.metadataCache.getFileCache(file)?.frontmatter;
 		if (fm?.date) {
-			const d = new Date(fm.date);
-			if (!isNaN(d.getTime())) return d;
+			const d = parseLocalDate(String(fm.date));
+			if (d) return d;
 		}
 	}
 

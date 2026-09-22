@@ -53,7 +53,8 @@ export class OneLineBlock extends MarkdownRenderChild {
 			? resolveWeekFiles(this.app, this.settings, this.ctx.sourcePath, config)
 			: resolveDayFiles(this.app, this.settings, this.ctx.sourcePath, config);
 
-		if (resolveAnchorDate(this.app, this.ctx.sourcePath, config) === null) {
+		const anchor = resolveAnchorDate(this.app, this.ctx.sourcePath, config);
+		if (anchor === null) {
 			this.renderError(el, "Cannot determine date for this note. Add a `date` property to the block or to the note's frontmatter.");
 			return;
 		}

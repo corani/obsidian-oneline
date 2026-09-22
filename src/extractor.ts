@@ -1,7 +1,7 @@
 export function extractSection(content: string, sectionHeading: string): string[] {
 	const target = sectionHeading.toLowerCase();
 	const headingRe = /^#+\s+(.+)$/;
-	const lines = content.split("\n");
+	const lines = content.split("\n").map(l => l.replace(/\r$/, ""));
 	const result: string[] = [];
 	let inside = false;
 	let inOneline = false;
